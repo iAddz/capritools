@@ -60,7 +60,7 @@ if(isset($_POST['dscan'])) {
 	<div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-			<iframe height="685" width="250" frameborder="0" src="https://auth.entosis.link/en/nav/"></iframe>
+			<iframe height="750" width="250" frameborder="0" src="https://auth.entosis.link/en/nav/"></iframe>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"><br>
           <h1 class="page-header">DScan Tool</h1>
