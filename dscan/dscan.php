@@ -4,11 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+	<title>Alliance Auth</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon"/>
 
 	<!-- Latest compiled and minified CSS -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-	<?php include("../switcher.php"); ?>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link href="http://bootstrapdocs.com/v3.2.0/docs/examples/dashboard/dashboard.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/flatly.min.css">
 	<link rel="stylesheet" href="/dscan/css/custom.css">
 	<!-- Optional theme -->
 	<!-- Latest compiled and minified JavaScript -->
@@ -24,6 +27,7 @@ if(!isset($key)) {
 } else {
 	$ds = getDscan($key);
 	$obs = getDscanObjects($key);
+	$citas = getDscanShipTypesCitadels($key);
 	$ships = getDscanShips($key);
 	$caps = getDscanShipTypesCaps($key);
 	$subs = getDscanShipTypesSubs($key);
@@ -65,12 +69,28 @@ if($towerurl == null) {
 }
 ?>
 <body>
-	<?php include("../header.php"); ?>
 
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand">inPanic</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+          </ul>
+        </div>
+      </div>
+    </div>
 
-	<div class="container">
-
-			<div class="col-lg-10 col-lg-offset-1">
+	<div class="container-fluid">
+      <div class="row">
+        <div class="sidebar">
+			<iframe height="685" width="250" frameborder="0" src="https://auth.entosis.link/en/nav/"></iframe>
+        </div>
+			<div class="col-sm-12 col-md-offset-2 main">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<strong>Location:</strong> <?php echo $location; ?>
@@ -113,6 +133,16 @@ if($towerurl == null) {
 						</div>
 						<?php } ?>
 						
+						<?php if(count($citas) > 0) { ?>
+						<div class="panel panel-default">
+							<div class="panel-heading"><strong>Citadels (<?php echo dscanListObjectsCount($citas); ?>)</strong></div>
+							
+							<div class="panel-body">
+								<?php echo dscanListObjects($citas); ?>
+							</div>
+						</div>
+						<?php } ?>
+						
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Info</strong></div>
 							
@@ -121,11 +151,11 @@ if($towerurl == null) {
 									$titfuel = $mass * 0.000000001 * ((1000) - (1000 * 0.10 * 5)) * 5;
 									$blopsfuel = $mass * 0.00000018 * ((300) - (300 * 0.10 * 5)) * 8;
 									?>
-									<strong>Est. Fleet Mass (excl. Supers):</strong> <?php echo number_format($mass); ?> kg<br />
+									<strong>Est. Fleet Mass :</strong> <?php echo number_format($mass); ?> kg<br />
 									<strong>Est. Fleet Volume (excl. Supers):</strong> <?php echo number_format($volume); ?> m3<br />
 									<strong>Est. Isotopes to Bridge 5ly (Titan):</strong> <?php echo number_format($titfuel); ?> isotopes<br />
 									<strong>Est. Isotopes to Bridge 8ly (Black Ops):</strong> <?php echo number_format($blopsfuel); ?> isotopes<br />
-									<span style="font-size: 0.9em;" class="text-muted"><i>Doesn't account for active MWD/ABs or rigs</span></i>
+									<span style="font-size: 0.9em;" class="text-muted"><i>Doesn't account for active MWD/ABs or rigs<br>Mass excludes capital jump drive ships</span></i>
 									<?php //echo $_SERVER['HTTP_REFERER'] . "<br />" . $_SERVER["REQUEST_URI"]; ?>
 								<?php } else { ?>
 									
@@ -153,5 +183,11 @@ if($towerurl == null) {
 					</div>
 				</div>
 			</div>
+		</div>
 	</div>
+	
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://bootstrapdocs.com/v3.2.0/docs/dist/js/bootstrap.min.js"></script>
+    <script src="http://bootstrapdocs.com/v3.2.0/docs/assets/js/docs.min.js"></script>
 </body>
+</html>

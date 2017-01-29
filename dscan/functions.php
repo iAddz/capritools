@@ -295,10 +295,9 @@ function getDscanShips($key) {
 		//No scan found
 		return null;
 	}
-	
 	//Get objects for scan
 	$id = $rows[0]['id'];
-	$st = $db->prepare("SELECT type, count(*) as quantity, groupName FROM dscanObjects INNER JOIN oceanus.invTypes as ships ON ships.typeName=dscanObjects.type INNER JOIN oceanus.invGroups AS groups ON groups.groupID = ships.groupID WHERE scan=:scan AND groups.categoryID = 6 GROUP BY type ORDER BY quantity DESC");
+	$st = $db->prepare("SELECT type, count(*) AS quantity, groupName FROM dscanObjects INNER JOIN oceanus.invTypes AS ships ON ships.typeName=dscanObjects.type INNER JOIN oceanus.invGroups AS groups ON groups.groupID = ships.groupID WHERE scan=:scan AND (groups.categoryID = 6 OR groups.categoryID = 65) GROUP BY type ORDER BY quantity DESC");
 	$st->bindValue(":scan", $id, PDO::PARAM_STR);
 	$st->execute();
 	$rows = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -325,7 +324,7 @@ function getDscanShipsMass($key) {
 	
 	//Get objects for scan
 	$id = $rows[0]['id'];
-	$st = $db->prepare("SELECT sum(mass) as totalMass FROM dscanObjects INNER JOIN oceanus.invTypes as ships ON ships.typeName=dscanObjects.type INNER JOIN oceanus.invGroups AS groups ON groups.groupID = ships.groupID WHERE scan=:scan AND ships.groupID NOT IN(30, 659) AND groups.categoryID = 6;");
+	$st = $db->prepare("SELECT sum(mass) as totalMass FROM dscanObjects INNER JOIN oceanus.invTypes as ships ON ships.typeName=dscanObjects.type INNER JOIN oceanus.invGroups AS groups ON groups.groupID = ships.groupID WHERE scan=:scan AND ships.groupID NOT IN(30, 485, 547, 659, 902, 1538) AND groups.categoryID = 6;");
 	$st->bindValue(":scan", $id, PDO::PARAM_STR);
 	$st->execute();
 	$rows = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -416,6 +415,31 @@ function getDscanShipTypesCaps($key) {
 	return $rows;
 }
 
+function getDscanShipTypesCitadels($key) {
+	//Connect MySQL
+	include("config.php");
+	$db = new PDO('mysql:host='.$mysql_host.';dbname='.$mysql_db.';charset=utf8', $mysql_user, $mysql_pass);
+	
+	//Check if scan exists
+	$st = $db->prepare("SELECT * FROM dscanScans WHERE `key`=:key LIMIT 1");
+	$st->bindValue(":key", $key, PDO::PARAM_STR);
+	$st->execute();
+	$rows = $st->fetchAll(PDO::FETCH_ASSOC);
+	if(count($rows) < 1) {
+		//No scan found
+		return null;
+	}
+	
+	//Get objects for scan
+	$id = $rows[0]['id'];
+	$st = $db->prepare("SELECT groups.groupName as type, count(*) as quantity, groupName FROM dscanObjects INNER JOIN oceanus.invTypes as ships ON ships.typeName=dscanObjects.type INNER JOIN oceanus.invGroups as groups ON groups.groupID = ships.groupID
+	WHERE scan=:scan AND ships.groupID IN(1657) AND groups.categoryID = 65 GROUP BY groups.groupName ORDER BY quantity DESC");
+	$st->bindValue(":scan", $id, PDO::PARAM_STR);
+	$st->execute();
+	$rows = $st->fetchAll(PDO::FETCH_ASSOC);
+	
+	return $rows;
+}
 
 
 function getDscanObjects($key) {
